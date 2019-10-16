@@ -2,8 +2,14 @@ import tweepy
 import csv #Import csv
 import time
 import pandas as pd
-
-
+import nltk
+#nltk.download('stopwords')
+from nltk.util import bigrams
+from nltk.util import ngrams
+from nltk.util import everygrams
+from nltk.tokenize import RegexpTokenizer
+from nltk.corpus import stopwords
+import  re
 consumer_key = "0fGnBSc3yWClYpEW1g8fLioQj"
 consumer_secret = "uVfnOaKGln5J8XpYVIVMGFj9cgFef2hbgUujtAZYWoItLmw8eG"
 access_token = "793556090294198272-puxvkH0l6ZvIj9zyZYQjPTv1dtHLvfc"
@@ -26,19 +32,32 @@ api = tweepy.API(auth)
 
 tweets = tweepy.Cursor(api.search,
                            q = "#TraficoGT  -filter:retweets",
-                           since = "2018-01-01",
-                           until = "2018-12-31",
-                           lang = "en").items(10)
+                           since = "2019-10-01",
+                           lang = "es").items(1000)
 
-    # Write a row to the CSV file. I use encode UTF-8
-    #csvWriter.writerow([tweet.created_at, tweet.text.encode('utf-8')])
-    #print (tweet.created_at, tweet.text)
+#for tweet in tweets:
+#    print(tweet.text)
+
 
 
 info = [[tweet.user.screen_name, tweet.user.location, tweet.created_at, tweet.text] for tweet in tweets]
-
-tweet_info = pd.DataFrame(data=info, 
+tweet_info = pd.DataFrame(data=info,
                     columns=['user', "location", "created_at", "texto"])
-print(tweet_info)
+tweet_text = (tweet_info.loc[:, "texto"])
+tweet_text = tweet_text.tolist()
+tweet_text = ",".join(str(e) for e in tweet_text)
+tweet_text = tweet_text.lower()
+tweet_text = re.sub(r"http\S+", "", tweet_text)
+tokenizer = RegexpTokenizer(r'\w+')
 
-#csvFile.close()
+tweet_tokens = tokenizer.tokenize(tweet_text)
+#print(tweet_tokens)
+stopwords = set(stopwords.words("spanish"))
+
+filtered_tokens = [w for w in tweet_tokens if not w in stopwords]
+
+fdist_tweets = nltk.FreqDist(filtered_tokens)
+print(fdist_tweets.most_common(20))
+
+#bi_reviews = list(bigrams(filtered_tokens))
+#print(bi_reviews)
