@@ -57,7 +57,9 @@ stopwords = set(stopwords.words("spanish"))
 filtered_tokens = [w for w in tweet_tokens if not w in stopwords]
 
 fdist_tweets = nltk.FreqDist(filtered_tokens)
-print(fdist_tweets.most_common(20))
+#print(fdist_tweets.most_common(20))
 
 #bi_reviews = list(bigrams(filtered_tokens))
 #print(bi_reviews)
+tri_tweets = list(ngrams(filtered_tokens, n=3))
+print(tri_tweets)
