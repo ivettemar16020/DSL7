@@ -1,4 +1,6 @@
 import tweepy
+import csv #Import csv
+
 consumer_key = "0fGnBSc3yWClYpEW1g8fLioQj"
 consumer_secret = "uVfnOaKGln5J8XpYVIVMGFj9cgFef2hbgUujtAZYWoItLmw8eG"
 access_token = "793556090294198272-puxvkH0l6ZvIj9zyZYQjPTv1dtHLvfc"
@@ -10,3 +12,22 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 # Creating the API object while passing in auth information
 api = tweepy.API(auth) 
+
+# Open/create a file to append data to
+csvFile = open('result.csv', 'a')
+#Use csv writer
+csvWriter = csv.writer(csvFile)
+
+auth = tweepy.OAuthHandler(CONSUMER_TOKEN, CONSUMER_SECRET)
+api = tweepy.API(auth)
+
+for tweet in tweepy.Cursor(api.search,
+                           q = "google",
+                           since = "2018-01-01",
+                           until = "2018-12-31",
+                           lang = "en").items():
+
+    # Write a row to the CSV file. I use encode UTF-8
+    csvWriter.writerow([tweet.created_at, tweet.text.encode('utf-8')])
+    print tweet.created_at, tweet.text
+csvFile.close()
