@@ -10,6 +10,9 @@ from nltk.util import everygrams
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 import  re
+
+from matplotlib import pyplot as plt
+
 consumer_key = "0fGnBSc3yWClYpEW1g8fLioQj"
 consumer_secret = "uVfnOaKGln5J8XpYVIVMGFj9cgFef2hbgUujtAZYWoItLmw8eG"
 access_token = "793556090294198272-puxvkH0l6ZvIj9zyZYQjPTv1dtHLvfc"
@@ -58,8 +61,14 @@ filtered_tokens = [w for w in tweet_tokens if not w in stopwords]
 
 fdist_tweets = nltk.FreqDist(filtered_tokens)
 #print(fdist_tweets.most_common(20))
+fdist_tweets.plot(30, cumulative=False, title="30 palabras más comúnes")
 
 #bi_reviews = list(bigrams(filtered_tokens))
 #print(bi_reviews)
+ngrams_list = []
 tri_tweets = list(ngrams(filtered_tokens, n=3))
-print(tri_tweets)
+for i, ngram in enumerate(tri_tweets):
+    ngram_str = ' '.join(ngram)
+    ngrams_list.append(ngram_str)
+    print(ngrams_list[i])
+
