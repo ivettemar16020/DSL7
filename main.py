@@ -1,9 +1,9 @@
 import tweepy
-import csv #Import csv
+import csv 
 import time
 import pandas as pd
 import nltk
-#nltk.download('stopwords')
+# nltk.download('stopwords')
 from nltk.util import bigrams
 from nltk.util import ngrams
 from nltk.util import everygrams
@@ -25,11 +25,6 @@ auth.set_access_token(access_token, access_token_secret)
 # Creating the API object while passing in auth information
 api = tweepy.API(auth) 
 
-# Open/create a file to append data to
-#csvFile = open('result.csv', 'a')
-#Use csv writer
-#csvWriter = csv.writer(csvFile)
-
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 api = tweepy.API(auth)
 
@@ -40,8 +35,6 @@ tweets = tweepy.Cursor(api.search,
 
 #for tweet in tweets:
 #    print(tweet.text)
-
-
 
 info = [[tweet.user.screen_name, tweet.user.location, tweet.created_at, tweet.text] for tweet in tweets]
 tweet_info = pd.DataFrame(data=info,
@@ -59,9 +52,9 @@ stopwords = set(stopwords.words("spanish"))
 
 filtered_tokens = [w for w in tweet_tokens if not w in stopwords]
 
-fdist_tweets = nltk.FreqDist(filtered_tokens)
+#fdist_tweets = nltk.FreqDist(filtered_tokens)
 #print(fdist_tweets.most_common(20))
-fdist_tweets.plot(30, cumulative=False, title="30 palabras más comúnes")
+#fdist_tweets.plot(30, cumulative=False, title="30 palabras más comúnes")
 
 #bi_reviews = list(bigrams(filtered_tokens))
 #print(bi_reviews)
@@ -70,5 +63,11 @@ tri_tweets = list(ngrams(filtered_tokens, n=3))
 for i, ngram in enumerate(tri_tweets):
     ngram_str = ' '.join(ngram)
     ngrams_list.append(ngram_str)
-    print(ngrams_list[i])
+    #print(ngrams_list[i])
 
+
+locations = tweet_info.groupby(tweet_info['location']).size().reset_index(name='Count')
+print(locations.sort_values(by='Count',ascending=0).head(10))
+
+user_count = tweet_info.groupby(tweet_info['user']).size().reset_index(name='Count')
+print(user_count.sort_values(by='Count',ascending=0).head(10))
